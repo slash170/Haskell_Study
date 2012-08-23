@@ -11,6 +11,10 @@ dispatch "add" = add
 dispatch "view" = view
 dispatch "remove" = remove
 dispatch "bump" = bump
+dispatch command = doesntExist command
+
+doesntExist :: String -> [String] -> IO ()
+doesntExist command _ = putStrLn $ "The " ++ command ++ " command doesn't exist"
 
 main :: IO ()
 main = do
@@ -19,13 +23,15 @@ main = do
 
 add :: [String] -> IO ()
 add [fileName, todoItem] = appendFile fileName (todoItem ++ "\n")
+add _ = putStrLn "The add command takes exactly two arguments"
 
 view :: [String] -> IO ()
 view [fileName] = do
   contents <- readFile fileName
   let todoTasks = lines contents
-      numberedTasks = zipWith (\n line -> show n ++ " - " ++ line) [0..] todoTasks
+      numberedTasks = zipWith (\n line -> show (n :: Integer) ++ " - " ++ line) [0..] todoTasks
   putStr $ unlines numberedTasks
+view _ = putStrLn "The view command takes exactly one arguments"
 
 remove :: [String] -> IO ()
 remove [fileName, numberString] = do
@@ -34,6 +40,7 @@ remove [fileName, numberString] = do
       number = read numberString
       newTodoItems = unlines $ delete (todoTasks !! number) todoTasks
   outputTodo (fileName, newTodoItems)
+remove _ = putStrLn "The remove command takes exactly two arguments"
 
 bump :: [String] -> IO ()
 bump [fileName, numberString] = do
@@ -43,6 +50,7 @@ bump [fileName, numberString] = do
       newTodoItems = unlines $ task:(delete task todoTasks)
           where task = (todoTasks !! number)
   outputTodo (fileName, newTodoItems)
+bump _ = putStrLn "The bump command takes exactly two arguments"
 
 outputTodo :: (String, String) -> IO ()
 outputTodo (fileName, newTodoItems) = do
@@ -56,4 +64,3 @@ outputTodo (fileName, newTodoItems) = do
           hClose tempHandle
           removeFile fileName
           renameFile tempName fileName)
-  
