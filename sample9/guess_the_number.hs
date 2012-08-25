@@ -14,8 +14,12 @@ askForNumber gen = do
   putStrLn "Which number in the range from 1 to 10 am I thinking of? "
   numberString <- getLine
   when (not $ null numberString) $ do
-                     let number = read numberString
-                     if randNumber == number
-                        then putStrLn "You are correct!"
-                        else putStrLn $ "Sorry, it was " ++ show randNumber
-                     askForNumber newGen
+                     let readsList = reads numberString
+                     case readsList of
+                       [(number, _)] -> do
+                         if randNumber == number
+                           then putStrLn "You are correct!"
+                           else putStrLn $ "Sorry, it was " ++ show randNumber
+                         askForNumber newGen
+                       _ -> do
+                         putStrLn "bad input..."
