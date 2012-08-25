@@ -23,5 +23,5 @@ outputAnswer [(number, _)] randNumber = do
   if randNumber == number
     then putStrLn "You are correct!"
     else putStrLn $ "Sorry, it was " ++ show randNumber
-outputAnswer _ _ = do
+outputAnswer _ randNumber = do
   putStrLn $ "Sorry, it was " ++ show randNumber
