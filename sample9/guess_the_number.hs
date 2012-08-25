@@ -24,4 +24,4 @@ outputAnswer [(number, _)] randNumber = do
     then putStrLn "You are correct!"
     else putStrLn $ "Sorry, it was " ++ show randNumber
 outputAnswer _ _ = do
-  putStrLn "bad input..."
+  putStrLn $ "Sorry, it was " ++ show randNumber
