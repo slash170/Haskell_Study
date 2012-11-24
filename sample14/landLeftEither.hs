@@ -1,24 +1,24 @@
 {-# OPTIONS -Wall #-}
 
-import Control.Monad
+import Control.Monad.Error()
 
 type Birds = Int
 type Pole = (Birds, Birds)
 
-landLeft :: Birds -> Pole -> Maybe Pole
+landLeft :: Birds -> Pole -> Either String Pole
 landLeft n (left, right)
-    | abs ((left + n) - right) < 4 = Just (left + n, right)
-    | otherwise                    = Nothing
+    | abs ((left + n) - right) < 4 = Right (left + n, right)
+    | otherwise                    = banana (left + n, right)
 
-landRight :: Birds -> Pole -> Maybe Pole
+landRight :: Birds -> Pole -> Either String Pole
 landRight n (left, right)
-    | abs (left - (right + n)) < 4 = Just (left, right + n)
-    | otherwise                    = Nothing
+    | abs (left - (right + n)) < 4 = Right (left, right + n)
+    | otherwise                    = banana (left, right + n)
 
-banana :: Pole -> Maybe Pole
-banana _ = Nothing
+banana :: Pole -> Either String Pole
+banana (left, right) = Left $ "Left:" ++ show left ++ ", Right:" ++ show right
 
-routine :: Maybe Pole
+routine :: Either String Pole
 routine = do
   start <- return (0, 0)
   first <- landLeft 2 start
